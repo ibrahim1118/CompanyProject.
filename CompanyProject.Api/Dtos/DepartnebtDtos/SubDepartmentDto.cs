@@ -10,7 +10,7 @@ namespace CompanyProject.Api.Dtos.DepartnebtDtos
         public string Name { get; set; }
 
         public string Description { get; set; }
-
+        public int EmployeesNumber { get; set; }
         public List<EmployeeDto> Employees { get; set; } = new List<EmployeeDto>();
     }
 }

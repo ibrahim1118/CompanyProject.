@@ -5,6 +5,7 @@ using CompanyProject.PLL.implementation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.WebSockets;
+using System.Runtime.Intrinsics.Arm;
 
 namespace CompanyProject.Api.Controllers
 {
@@ -28,6 +29,14 @@ namespace CompanyProject.Api.Controllers
         
             var departments = await _departmentRepository.GetAllDepartmentWithDetilsAsync();
                 var departmentsdto = mapper.Map<List<DepartmentDto>>(departments); 
+            for(int i = 0;i< departmentsdto.Count;i++)
+            {
+                departmentsdto[i].SubDepartmentsNumber = departmentsdto[i].SubDepartments.Count();
+                for (int j = 0; j < departmentsdto[i].SubDepartmentsNumber; j++)
+                {
+                    departmentsdto[i].SubDepartments[j].EmployeesNumber = departmentsdto[i].SubDepartments[j].Employees.Count();
+                }
+            }
             return Ok(departmentsdto);
        
        
@@ -45,7 +54,12 @@ namespace CompanyProject.Api.Controllers
             {
                 return NotFound($"Department with ID {id} not found");
             }
-                var departmentDto = mapper.Map<DepartmentDto>(department); 
+           var departmentDto = mapper.Map<DepartmentDto>(department);
+           departmentDto.SubDepartmentsNumber = departmentDto.SubDepartments.Count();
+           for (int i = 0; i < departmentDto.SubDepartmentsNumber;i++)
+            {
+                departmentDto.SubDepartments[i].EmployeesNumber = departmentDto.SubDepartments[i].Employees.Count();
+            }
             
             return Ok(departmentDto);
        
@@ -111,7 +125,7 @@ namespace CompanyProject.Api.Controllers
 
              await   _departmentRepository.DeleteAsync(department);
 
-                return Ok("Department Deleted "); 
+              return Ok("Department Deleted "); 
         }
         catch (Exception ex)
         {
