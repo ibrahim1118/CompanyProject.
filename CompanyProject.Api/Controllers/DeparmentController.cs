@@ -22,7 +22,7 @@ namespace CompanyProject.Api.Controllers
         }
 
 
-    [HttpGet]
+    [HttpGet("GetAll")]
     public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetAllDepartments()
     {
         
@@ -34,7 +34,7 @@ namespace CompanyProject.Api.Controllers
     }
 
     
-    [HttpGet("{id}")]
+    [HttpGet("GetBy{id}")]
     public async Task<ActionResult<DepartmentDto>> GetDepartmentById(int id)
     {
       
@@ -52,7 +52,7 @@ namespace CompanyProject.Api.Controllers
         
     }
 
-    [HttpPost]
+    [HttpPost("Create")]
     public async Task<ActionResult<Department>> CreateDepartment([FromBody] CreateDepartmentDto departmentdto)
     {
 
@@ -70,12 +70,12 @@ namespace CompanyProject.Api.Controllers
     }
 
    
-    [HttpPut("{id}")]
+    [HttpPut("Update{id}")]
     public async Task<IActionResult> UpdateDepartment(int id ,  UpdateDepartmentDto updateDepartmentDto)
     {
         try
         {
-           if(id ==updateDepartmentDto.Id)
+           if(id !=updateDepartmentDto.Id)
            {
                     return BadRequest(); 
            }
@@ -86,8 +86,8 @@ namespace CompanyProject.Api.Controllers
             {
                 return NotFound($"Department with ID {updateDepartmentDto.Id} not found");
             }
-            var dep = mapper.Map<Department>(updateDepartmentDto); 
-           await _departmentRepository.UpdateAsync(dep);
+       mapper.Map(updateDepartmentDto, department); 
+           await _departmentRepository.UpdateAsync(department);
 
                 return Ok("Department updateed");
         }
@@ -98,7 +98,7 @@ namespace CompanyProject.Api.Controllers
     }
 
    
-    [HttpDelete("{id}")]
+    [HttpDelete("Delete{id}")]
     public async Task<IActionResult> DeleteDepartment(int id)
     {
         try
